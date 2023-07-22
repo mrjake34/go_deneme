@@ -19,16 +19,6 @@ const (
 	CONNECTION_PORT = ":8080"
 )
 
-// func (pwf *ProductFactWorker) start() error {
-// 	call := pwf.client.Database("Efes").Collection("product")
-// 	ticker := time.NewTicker(2 * time.Second)
-// 	for {
-// 		resp, err := http.Get("localhost:8080")
-
-// 		<-ticker.C
-// 	}
-// }
-
 func main() {
 	err := godotenv.Load()
 	if err != nil {
@@ -42,39 +32,13 @@ func main() {
 
 	r.HandleFunc("/products", server.GetProduct).Methods("GET")
 	r.HandleFunc("/products", server.SetProduct).Methods("POST")
+	r.HandleFunc("/products/{id}", server.DeleteProduct).Methods("DELETE")
+	r.HandleFunc("/products/{id}", server.UpdateProduct).Methods("PUT")
+	r.HandleFunc("/products/{id}", server.GetProductById).Methods("GET")
 
 	http.ListenAndServe(":8080", r)
 }
 
-// func GetProduct(w http.ResponseWriter, r *http.Request) {
-// 	session, err := mongo.Connect(context.Background(), options.Client().ApplyURI(getEnv("MONGODB_URL", "mongodb://localhost:27017")))
-// 	defer session.Disconnect(context.Background())
-
-// 	if err != nil {
-// 		panic(err)
-// 	}
-
-// 	c := session.Database("Efes").Collection("product")
-// 	fmt.Println(c)
-// 	cursor, err := c.Find(context.TODO(), nil)
-// 	if err != nil {
-// 		w.WriteHeader(http.StatusInternalServerError)
-// 		w.Write([]byte(err.Error()))
-// 		fmt.Println(err.Error())
-// 		return
-// 	}
-// 	var products []models.Product
-// 	if err = cursor.All(context.TODO(), &products); err != nil {
-// 		w.WriteHeader(http.StatusInternalServerError)
-// 		w.Write([]byte(err.Error()))
-// 		fmt.Println(err.Error())
-// 		return
-// 	}
-
-// 	w.Header().Set("Content-Type", "application/json")
-// 	w.WriteHeader(http.StatusOK)
-// 	json.NewEncoder(w).Encode(products)
-// }
 
 func getSeesion() *mongo.Client {
 	var session, err = mongo.Connect(context.Background(), options.Client().ApplyURI(getEnv("MONGODB_URL", "mongodb://localhost:27017")))
