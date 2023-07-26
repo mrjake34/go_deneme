@@ -5,17 +5,7 @@ import (
 	"encoding/json"
 	"go_deneme/models"
 	"net/http"
-
-	"go.mongodb.org/mongo-driver/mongo"
 )
-
-type Server struct {
-	client *mongo.Client
-}
-
-func MongoServer(client *mongo.Client) *Server {
-	return &Server{client: client}
-}
 
 func (s *Server) Register(w http.ResponseWriter, r *http.Request) {
 	c := s.client.Database("Efes").Collection("users")

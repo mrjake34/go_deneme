@@ -1,4 +1,4 @@
-package handler
+package controller
 
 import (
 	"context"
@@ -11,14 +11,6 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 )
-
-type Server struct {
-	client *mongo.Client
-}
-
-func MongoServer(client *mongo.Client) *Server {
-	return &Server{client: client}
-}
 
 func (s *Server) GetProduct(w http.ResponseWriter, r *http.Request) {
 	c := s.client.Database("Efes").Collection("product")
