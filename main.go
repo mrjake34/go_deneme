@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"go_deneme/handler"
+	"go_deneme/routers"
 	"log"
 	"net/http"
 	"os"
@@ -12,11 +13,6 @@ import (
 	"github.com/joho/godotenv"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
-)
-
-const (
-	CONNECTION_HOST = "localhost"
-	CONNECTION_PORT = ":8080"
 )
 
 func main() {
@@ -28,6 +24,9 @@ func main() {
 	// defer client.Disconnect(context.Background())
 	fmt.Println("Connected to MongoDB!")
 	r := mux.NewRouter()
+
+	routers.UserRouter(r)
+
 	server := handler.MongoServer(client)
 
 	r.HandleFunc("/products", server.GetProduct).Methods("GET")
@@ -36,12 +35,11 @@ func main() {
 	r.HandleFunc("/products/{id}", server.UpdateProduct).Methods("PUT")
 	r.HandleFunc("/products/{id}", server.GetProductById).Methods("GET")
 
-	http.ListenAndServe(":8080", r)
+	http.ListenAndServe("localhost:8000", r)
 }
 
-
 func getSeesion() *mongo.Client {
-	var session, err = mongo.Connect(context.Background(), options.Client().ApplyURI(getEnv("MONGODB_URL", "mongodb://localhost:27017")))
+	var session, err = mongo.Connect(context.Background(), options.Client().ApplyURI(getEnv("MONGODB_URL", "mongodb://localhost:5554")))
 	if err != nil {
 		panic(err)
 	}
