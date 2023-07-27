@@ -11,7 +11,7 @@ func ProductRouter(r *mux.Router) {
 	server := controller.MongoServer(client)
 	r.HandleFunc("/products", server.GetProduct).Methods("GET")
 	r.HandleFunc("/products", server.SetProduct).Methods("POST")
-	r.HandleFunc("/products/{id}", server.DeleteProduct).Methods("DELETE")
-	r.HandleFunc("/products/{id}", server.UpdateProduct).Methods("PUT")
-	r.HandleFunc("/products/{id}", server.GetProductById).Methods("GET")
+	r.HandleFunc("/products/{productID}", server.DeleteProduct).Methods("DELETE")
+	r.HandleFunc("/products/{productID}", server.UpdateProduct).Methods("PUT")
+	r.HandleFunc("/products/{productID}", server.GetProductById).Methods("GET")
 }
