@@ -3,12 +3,17 @@ package models
 import "golang.org/x/crypto/bcrypt"
 
 type User struct {
-	Fullname string `json:"fullName"`
-	Email    string `json:"email"`
-	Password string `json:"password"`
+	UserID    string `json:"_id" bson:"_id, omitempty"`
+	Fullname  string `json:"fullName"`
+	Email     string `json:"email"`
+	Password  string `json:"password"`
+	Token     string `json:"token"`
+	IP        string `json:"ip"`
+	CreatedAt string `json:"createdAt"`
+	Role      string `json:"role"`
 }
 
-func HashPassword(u *User) error {
+func HashPasswordUser(u *User) error {
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(u.Password), bcrypt.DefaultCost)
 	if err != nil {
 		return err

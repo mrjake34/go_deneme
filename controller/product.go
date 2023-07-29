@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"go_deneme/config"
 	"go_deneme/models"
 	"net/http"
 	"strconv"
@@ -13,7 +14,7 @@ import (
 )
 
 func (s *Server) GetProduct(w http.ResponseWriter, r *http.Request) {
-	c := s.client.Database("Efes").Collection("product")
+	c := s.client.Database(config.MONGO_DB).Collection(config.MONGO_PRODUCT_COLLECTION)
 	cursor, err := c.Find(context.Background(), bson.M{})
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
@@ -21,7 +22,6 @@ func (s *Server) GetProduct(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(err.Error())
 		return
 	}
-	fmt.Println("Cursor", cursor)
 	var products []models.Product
 	if err = cursor.All(context.Background(), &products); err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
@@ -34,7 +34,7 @@ func (s *Server) GetProduct(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Server) SetProduct(w http.ResponseWriter, r *http.Request) {
-	c := s.client.Database("Efes").Collection("product")
+	c := s.client.Database(config.MONGO_DB).Collection(config.MONGO_PRODUCT_COLLECTION)
 	cursor, err := c.Find(context.Background(), bson.M{})
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
@@ -42,7 +42,6 @@ func (s *Server) SetProduct(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(err.Error())
 		return
 	}
-	fmt.Println("Cursor", cursor)
 	var products []models.Product
 	if err = cursor.All(context.Background(), &products); err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
@@ -64,7 +63,7 @@ func (s *Server) SetProduct(w http.ResponseWriter, r *http.Request) {
 
 	if product.Name == "" || product.Desc == "" || product.Price == 0 || product.Count == 0 {
 		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte("All fields are required"))
+		w.Write([]byte(config.ALL_FIELDS_REQUIRED))
 		return
 	}
 	_, err = c.InsertOne(context.Background(), product)
@@ -75,16 +74,16 @@ func (s *Server) SetProduct(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusCreated)
-	w.Write([]byte("Product created successfully"))
+	w.Write([]byte(config.PRODUCT_CREATED))
 }
 
 func (s *Server) DeleteProduct(w http.ResponseWriter, r *http.Request) {
-	c := s.client.Database("Efes").Collection("product")
+	c := s.client.Database(config.MONGO_DB).Collection(config.MONGO_PRODUCT_COLLECTION)
 	vars := mux.Vars(r)
-	id := vars["productID"]
+	id := vars[config.PRODUCT_ID]
 	if id == "" {
 		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte("ID is required"))
+		w.Write([]byte(config.ID_REQUIRED))
 		return
 	}
 	intVal, err := strconv.Atoi(id)
@@ -93,7 +92,7 @@ func (s *Server) DeleteProduct(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(err.Error()))
 		return
 	}
-	filter := bson.M{"productID": intVal}
+	filter := bson.M{config.PRODUCT_ID: intVal}
 	_, err = c.DeleteOne(context.Background(), filter)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
@@ -101,16 +100,16 @@ func (s *Server) DeleteProduct(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.WriteHeader(http.StatusOK)
-	w.Write([]byte("Product deleted successfully"))
+	w.Write([]byte(config.PRODUCT_DELETED))
 }
 
 func (s *Server) UpdateProduct(w http.ResponseWriter, r *http.Request) {
-	c := s.client.Database("Efes").Collection("product")
+	c := s.client.Database(config.MONGO_DB).Collection(config.MONGO_PRODUCT_COLLECTION)
 	vars := mux.Vars(r)
-	id := vars["productID"]
+	id := vars[config.PRODUCT_ID]
 	if id == "" {
 		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte("ID is required"))
+		w.Write([]byte(config.ID_REQUIRED))
 		return
 	}
 	intVal, err := strconv.Atoi(id)
@@ -126,8 +125,8 @@ func (s *Server) UpdateProduct(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(err.Error()))
 		return
 	}
-	filter := bson.M{"productID": intVal}
-	update := bson.M{"$set": bson.M{"name": product.Name, "count": product.Count, "desc": product.Desc, "price": product.Price}}
+	filter := bson.M{config.PRODUCT_ID: intVal}
+	update := bson.M{config.SET: bson.M{config.PRODUCT_NAME: product.Name, config.PRODUCT_COUNT: product.Count, config.PRODUCT_DESC: product.Desc, config.PRODUCT_PRICE: product.Price}}
 	_, err = c.UpdateOne(context.Background(), filter, update)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
@@ -135,16 +134,16 @@ func (s *Server) UpdateProduct(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.WriteHeader(http.StatusOK)
-	w.Write([]byte("Product updated successfully"))
+	w.Write([]byte(config.PRODUCT_UPDATED))
 }
 
 func (s *Server) GetProductById(w http.ResponseWriter, r *http.Request) {
-	c := s.client.Database("Efes").Collection("product")
+	c := s.client.Database(config.MONGO_DB).Collection(config.MONGO_PRODUCT_COLLECTION)
 	vars := mux.Vars(r)
-	id := vars["productID"]
+	id := vars[config.PRODUCT_ID]
 	if id == "" {
 		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte("ID is required"))
+		w.Write([]byte(config.ID_REQUIRED))
 		return
 	}
 	intVal, err := strconv.Atoi(id)
@@ -153,20 +152,20 @@ func (s *Server) GetProductById(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(err.Error()))
 		return
 	}
-	filter := bson.M{"productID": intVal}
+	filter := bson.M{config.PRODUCT_ID: intVal}
 	product := models.Product{}
 	err = c.FindOne(context.Background(), filter).Decode(&product)
 	if err != nil {
-		if err.Error() == "mongo: no documents in result" {
+		if err.Error() == config.MONGO_NO_DOCUMENTS_IN_RESULT {
 			w.WriteHeader(http.StatusNotFound)
-			w.Write([]byte("Product not found"))
+			w.Write([]byte(config.PRODUCT_NOT_FOUND))
 			return
 		}
 		w.WriteHeader(http.StatusInternalServerError)
 		w.Write([]byte(err.Error()))
 		return
 	}
-	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set(config.CONTENT_TYPE, config.APPLICATION_JSON)
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(product)
 }

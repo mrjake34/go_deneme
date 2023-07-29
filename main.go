@@ -1,7 +1,7 @@
 package main
 
 import (
-	"fmt"
+	"go_deneme/config"
 	"go_deneme/routers"
 	"log"
 	"net/http"
@@ -13,13 +13,16 @@ import (
 func main() {
 	err := godotenv.Load()
 	if err != nil {
-		log.Fatal("Error loading .env file")
+		log.Fatal(config.ENV_ERROR)
 	}
-	fmt.Println("Connected to MongoDB!")
 	r := mux.NewRouter()
 
 	routers.UserRouter(r)
 	routers.ProductRouter(r)
 
-	http.ListenAndServe("localhost:8000", r)
+	err = http.ListenAndServe(config.LOCAL_HOST, r)
+	if err != nil {
+		log.Fatal(err)
+	}
+
 }

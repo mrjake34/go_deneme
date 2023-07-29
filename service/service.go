@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"go_deneme/config"
 	"os"
 	"time"
 
@@ -10,7 +11,7 @@ import (
 )
 
 func GetSession() *mongo.Client {
-	session, err := mongo.Connect(context.Background(), options.Client().ApplyURI(getEnv("MONGODB_URL", "mongodb://localhost:5554")))
+	session, err := mongo.Connect(context.Background(), options.Client().ApplyURI(getEnv(config.MONGODB_URL, config.MONGO_URI)))
 	if err != nil {
 		panic(err)
 	}
@@ -36,3 +37,6 @@ func getEnv(key, defaulValue string) string {
 	return value
 }
 
+func GetJwtKey() []byte {
+	return []byte(getEnv(config.SIGNED_STRING, config.SIGNED_STRING))
+}
