@@ -126,7 +126,7 @@ func (s *Server) UpdateProduct(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	filter := bson.M{config.PRODUCT_ID: intVal}
-	update := bson.M{config.SET: bson.M{config.PRODUCT_NAME: product.Name, config.PRODUCT_COUNT: product.Count, config.PRODUCT_DESC: product.Desc, config.PRODUCT_PRICE: product.Price}}
+	update := bson.M{config.SET: bson.M{config.PRODUCT_NAME: product.Name, config.PRODUCT_COUNT: product.Count, config.PRODUCT_DESC: product.Desc, config.PRODUCT_PRICE: product.Price, config.PRODUCT_IMAGE: product.Image, config.PRODUCT_SPECIFICATION: product.Specification}}
 	_, err = c.UpdateOne(context.Background(), filter, update)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
