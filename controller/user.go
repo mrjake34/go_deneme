@@ -69,4 +69,6 @@ func (s *Server) GetUserDetails(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(err.Error()))
 		return
 	}
+
+	
 }

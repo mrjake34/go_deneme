@@ -11,3 +11,5 @@ func CheckPasswordLogin(u *User, l *Login) error {
 	err := bcrypt.CompareHashAndPassword([]byte(u.Password), []byte(l.Password))
 	return err
 }
+
+

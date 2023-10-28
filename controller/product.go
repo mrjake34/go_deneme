@@ -8,7 +8,6 @@ import (
 	"go_deneme/models"
 	"net/http"
 	"strconv"
-
 	"github.com/gorilla/mux"
 	"go.mongodb.org/mongo-driver/bson"
 )
